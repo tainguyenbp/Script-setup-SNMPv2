@@ -3,18 +3,62 @@
 # Email: nguyenngoctaibp@gmail.com
 # github: https://github.com/tainguyenbp
 
+RED='\033[0;31m'
+NC='\033[0m'
+GREEN='\033[0;32m'
+
 # Global variable
 OS_DISTRO="Unknow"
 OS_CENTOS_STAND="7.0"
+PATH_FILE_SNMP="/etc/snmp/snmpd.conf"
+
 
 function setup_snmp_centos(){
 
 	yum -y install net-snmp net-snmp-devel net-snmp-utils bzip2-devel newt-devel lm_sensors-devel
 }
 
+function enable_restart_snmp_centos6(){
+
+	# turn on service start up witch linux	
+	chkconfig snmpd on
+	# restart service snmpd
+	/etc/init.d/snmpd restart
+}
+
+function enable_restart_snmp_centos7(){
+
+	# enable service startup with linux
+	systemctl enable snmpd
+	# restart service snmpd
+	systemctl restart snmpd
+}
+
 function config_snmpv2_centos(){
 
-	
+	year=$(date +"%Y")
+	month=$(date +"%m")
+	day=$(date +"%d")
+
+	hour=$(date +"%H")
+	munites=$(date +"%M")
+	second=$(date +"%S")
+
+	hms=$hour$munites$second
+	ymd=$year$month$day
+
+
+		if [ -f "$PATH_FILE_SNMP" ]
+			then
+				echo "File $PATH_FILE_SNMP found !!!"
+				# Backup file snmpd.conf 
+				cp "$PATH_FILE_SNMP" /etc/snmp/snmpd.conf_backup_"$ymd"_"$hms"
+				
+
+		
+		else
+			echo "File $PATH_FILE_SNMP not found !!!"
+		fi	
 }
 
 function setup_snmp_ubuntu(){
